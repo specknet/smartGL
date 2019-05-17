@@ -24,32 +24,8 @@
         <fr.arnaudguyon.smartgl.opengl.SmartGLView
             android:id="@+id/activityGLView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_weight="50"/>
-
-        <ImageView
-            android:id="@+id/screenshotView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="450dp"
             android:layout_weight="50"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/screenshotButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="Take Screenshot"/>
-
-    <fragment
-        android:id="@+id/fragment"
-        android:name="fr.arnaudguyon.smartglapp.MainGLFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        tools:layout="@layout/glfragment"/>
-
-
 </LinearLayout>
