@@ -304,10 +304,10 @@ public class GLViewController implements SmartGLViewController {
 
     private Object3D loadEarth(@NonNull Context context) {
         WavefrontModel modelColored = new WavefrontModel.Builder(context, R.raw.teddybear2_simplified_obj)//.create();
-                .setColor(0.7f, 0.1f, 0.4f)
+                .setColor(0.5f, 0.1f, 0.3f)
                 .create();
         Object3D object3D = modelColored.toObject3D();
-        object3D.setScale(0.5f, 0.5f, 0.5f);
+        //object3D.setScale(0.5f, 0.5f, 0.5f);
         object3D.setPos(0, 0, -4);
         return object3D;
     }
