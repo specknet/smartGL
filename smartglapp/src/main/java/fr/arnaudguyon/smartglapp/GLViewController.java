@@ -241,8 +241,8 @@ public class GLViewController implements SmartGLViewController {
             float rx = (float)(heading * 180.0 / Math.PI);
 
             mObject3D.setRotation(rx, ry, rz);
-            rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
-            Log.i("rot", rotation);
+            //rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
+            //Log.i("rot", rotation);
         }
 
     }
