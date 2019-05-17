@@ -124,7 +124,7 @@ public class GLViewController implements SmartGLViewController {
         mSprite.setPos(60, 60);
         mSprite.setTexture(mSpriteTexture);
         mSprite.setDisplayPriority(20);
-        mRenderPassSprite.addSprite(mSprite);
+        //mRenderPassSprite.addSprite(mSprite);
 
         mBus = loadBus(context);
         mCube = loadCube(context);
@@ -132,7 +132,8 @@ public class GLViewController implements SmartGLViewController {
         mCruiser = loadCruiser(context);
         mEarth = loadEarth(context);
 
-        switchToFrigate();
+        //switchToFrigate();
+        switchToEarth();
     }
 
     @Override
@@ -180,6 +181,7 @@ public class GLViewController implements SmartGLViewController {
 
         SmartGLRenderer renderer = smartGLView.getSmartGLRenderer();
         float frameDuration = renderer.getFrameDuration();
+        /*
         if (mSprite != null) {
 
             float angle = mSprite.getRotation() + frameDuration * mRandomRotationSpeed;
@@ -223,6 +225,7 @@ public class GLViewController implements SmartGLViewController {
             }
             mSprite.setPos(x, y);
         }
+        */
 
         if (mObject3D != null) {
             /*
@@ -300,10 +303,11 @@ public class GLViewController implements SmartGLViewController {
     }
 
     private Object3D loadEarth(@NonNull Context context) {
-        WavefrontModel modelColored = new WavefrontModel.Builder(context, R.raw.teddybear2_simplified_obj).create();
-                //.setColor(0.2f, 0.6f, 1)
-                //.create();
+        WavefrontModel modelColored = new WavefrontModel.Builder(context, R.raw.teddybear2_simplified_obj)//.create();
+                .setColor(0.7f, 0.1f, 0.4f)
+                .create();
         Object3D object3D = modelColored.toObject3D();
+        object3D.setScale(0.5f, 0.5f, 0.5f);
         object3D.setPos(0, 0, -4);
         return object3D;
     }
