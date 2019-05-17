@@ -30,6 +30,8 @@ import com.polidea.rxandroidble2.scan.ScanSettings;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.UUID;
 
 import fr.arnaudguyon.smartgl.opengl.OpenGLRenderer;
 import fr.arnaudguyon.smartgl.opengl.SmartGLRenderer;
@@ -47,9 +49,14 @@ public class MainActivity extends Activity {
     private ByteBuffer packetData;
 
     private Context ctx;
-
+    boolean connected = false;
 
     private SmartGLView mActivityGLView;
+
+    private double q_w = 1.0;
+    private double q_x = 0.0;
+    private double q_y = 0.0;
+    private double q_z = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,63 @@ public class MainActivity extends Activity {
                             });
                         }
                 );
+    }
+
+    private void connectToOrient(String addr) {
+        orient_device = rxBleClient.getBleDevice(addr);
+        String characteristic;
+        characteristic = ORIENT_QUAT_CHARACTERISTIC;
+
+        orient_device.establishConnection(false)
+                .flatMap(rxBleConnection -> rxBleConnection.setupNotification(UUID.fromString(characteristic)))
+                .doOnNext(notificationObservable -> {
+                    // Notification has been set up
+                })
+                .flatMap(notificationObservable -> notificationObservable) // <-- Notification has been set up, now observe value changes.
+                .subscribe(
+                        bytes -> {
+                            //n += 1;
+                            // Given characteristic has been changes, here is the value.
+
+                            //Log.i("OrientAndroid", "Received " + bytes.length + " bytes");
+                            if (!connected) {
+                                connected = true;
+
+                                runOnUiThread(() -> {
+                                    Toast.makeText(ctx, "Receiving sensor data",
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                            handleQuatPacket(bytes);
+                        },
+                        throwable -> {
+                            // Handle an error here.
+                            Log.e("OrientAndroid", "Error: " + throwable.toString());
+                        }
+                );
+    }
+
+    private void handleQuatPacket(final byte[] bytes) {
+        float divisor_quat = (1 << 30);
+        float w = floatFromDataLittle(Arrays.copyOfRange(bytes, 0, 4)) / divisor_quat;
+        float x = floatFromDataLittle(Arrays.copyOfRange(bytes, 4, 8)) / divisor_quat;
+        float y = floatFromDataLittle(Arrays.copyOfRange(bytes, 8, 12)) / divisor_quat;
+        float z = floatFromDataLittle(Arrays.copyOfRange(bytes, 12, 16)) / divisor_quat;
+
+        q_w = w;
+        q_x = x;
+        q_y = -y;
+        q_z = -z;
+
+        //Negating y and z seems to work
+
+        String q_str = "Quat: (" + w + ", " + x + ", " + y + ", " + z + ")";
+        Log.d("quat", q_str);
+    }
+
+    private float floatFromDataLittle(byte[] bytes_slice) {
+        // Bytes to float (little endian)
+        return  java.nio.ByteBuffer.wrap(bytes_slice).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
     @Override
