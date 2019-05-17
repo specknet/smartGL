@@ -17,6 +17,7 @@ package fr.arnaudguyon.smartglapp;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import fr.arnaudguyon.smartgl.math.Vector3D;
 import fr.arnaudguyon.smartgl.opengl.LightParallel;
@@ -31,6 +32,9 @@ import fr.arnaudguyon.smartgl.opengl.Sprite;
 import fr.arnaudguyon.smartgl.opengl.Texture;
 import fr.arnaudguyon.smartgl.tools.WavefrontModel;
 import fr.arnaudguyon.smartgl.touch.TouchHelperEvent;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan2;
 
 /**
  * Created by arnaud on 19/11/2016.
@@ -66,6 +70,12 @@ public class GLViewController implements SmartGLViewController {
     public double q_x = 0.0;
     public double q_y = 0.0;
     public double q_z = 0.0;
+
+    private double attitude = 0.0;
+    private double heading = 0.0;
+    private double bank = 0.0;
+
+    private static String rotation;
 
     public GLViewController() {
         mRandomRotationSpeed = (float) ((Math.random() * 50) + 100);
@@ -215,10 +225,24 @@ public class GLViewController implements SmartGLViewController {
         }
 
         if (mObject3D != null) {
+            /*
             float rx = mObject3D.getRotX() + 50 * frameDuration;
             float ry = mObject3D.getRotY() + 37 * frameDuration;
             float rz = mObject3D.getRotZ() + 26 * frameDuration;
             mObject3D.setRotation(rx, ry, rz);
+            */
+            //String q_str = "Quat: (" + q_w + ", " + q_x + ", " + q_y + ", " + q_z + ")";
+            //Log.d("quat", q_str);
+
+            qtoa(q_w,q_x,q_y,q_z);
+
+            float rz = (float)(bank * 180.0 / Math.PI);
+            float ry = (float)(attitude * 180.0 / Math.PI);
+            float rx = (float)(heading * 180.0 / Math.PI);
+
+            mObject3D.setRotation(rx, ry, rz);
+            rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
+            Log.i("rot", rotation);
         }
 
     }
@@ -306,6 +330,28 @@ public class GLViewController implements SmartGLViewController {
     void switchToBus() {
         mNextObjectColor = null;
         mNextObject = mBus;
+    }
+
+    public void qtoa(double w, double x, double y, double z) {
+        double sqw = Math.pow(w, 2);
+        double sqx = Math.pow(x, 2);
+        double sqy = Math.pow(y, 2);
+        double sqz = Math.pow(z, 2);
+        double unit = sqx + sqy + sqz + sqw;
+        double test = x*y+z*w;
+        if (test > 0.499 * unit) {
+            heading = 2*atan2(x, w);
+            attitude = Math.PI/2;
+            bank = 0;
+        } else if (test < -0.499*unit) {
+            heading = -2*atan2(x, w);
+            attitude = -Math.PI/2;
+            bank = 0;
+        } else {
+            heading = atan2(2*y*w-2*x*z, sqx-sqy-sqz+sqw);
+            attitude = asin(2*test/unit);
+            bank = atan2(2*x*w-2*y*z, -sqx+sqy-sqz+sqw);
+        }
     }
 
 }

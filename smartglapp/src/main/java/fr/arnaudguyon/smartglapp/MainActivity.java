@@ -160,8 +160,8 @@ public class MainActivity extends Activity {
 
         //Negating y and z seems to work
 
-        String q_str = "Quat: (" + w + ", " + x + ", " + y + ", " + z + ")";
-        Log.d("quat", q_str);
+        //String q_str = "Quat: (" + w + ", " + x + ", " + y + ", " + z + ")";
+        //Log.d("quat", q_str);
     }
 
     private float floatFromDataLittle(byte[] bytes_slice) {
