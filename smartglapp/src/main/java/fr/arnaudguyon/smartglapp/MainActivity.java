@@ -52,11 +52,7 @@ public class MainActivity extends Activity {
     boolean connected = false;
 
     private SmartGLView mActivityGLView;
-
-    private double q_w = 1.0;
-    private double q_x = 0.0;
-    private double q_y = 0.0;
-    private double q_z = 0.0;
+    private GLViewController glv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +62,7 @@ public class MainActivity extends Activity {
 
         mActivityGLView = (SmartGLView) findViewById(R.id.activityGLView);
         mActivityGLView.setDefaultRenderer(this);
-        GLViewController glv = new GLViewController();
+        glv = new GLViewController();
         mActivityGLView.setController(glv);
         ctx = this;
 
@@ -98,7 +94,7 @@ public class MainActivity extends Activity {
                                                     scanResult.getBleDevice().getMacAddress(),
                                             Toast.LENGTH_SHORT).show();
                                 });
-                                //connectToOrient(ORIENT_BLE_ADDRESS);
+                                connectToOrient(ORIENT_BLE_ADDRESS);
                                 scanSubscription.dispose();
                             }
                         },
@@ -134,6 +130,7 @@ public class MainActivity extends Activity {
                                 connected = true;
 
                                 runOnUiThread(() -> {
+                                    Log.i("OrientAndroid", "receiving sensor data");
                                     Toast.makeText(ctx, "Receiving sensor data",
                                             Toast.LENGTH_SHORT).show();
                                 });
@@ -154,10 +151,12 @@ public class MainActivity extends Activity {
         float y = floatFromDataLittle(Arrays.copyOfRange(bytes, 8, 12)) / divisor_quat;
         float z = floatFromDataLittle(Arrays.copyOfRange(bytes, 12, 16)) / divisor_quat;
 
-        q_w = w;
-        q_x = x;
-        q_y = -y;
-        q_z = -z;
+        //q_w = w;
+        //q_x = x;
+        //q_y = -y;
+        //q_z = -z;
+
+        glv.setQuat(w,x,-y,-z);
 
         //Negating y and z seems to work
 

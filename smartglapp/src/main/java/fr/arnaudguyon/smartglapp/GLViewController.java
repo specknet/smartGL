@@ -62,11 +62,23 @@ public class GLViewController implements SmartGLViewController {
     private Object3D mNextObject = null;
     private Object3D mNextObjectColor = null;
 
+    public double q_w = 1.0;
+    public double q_x = 0.0;
+    public double q_y = 0.0;
+    public double q_z = 0.0;
+
     public GLViewController() {
         mRandomRotationSpeed = (float) ((Math.random() * 50) + 100);
         if (Math.random() > 0.5f) {
             mRandomRotationSpeed *= -1;
         }
+    }
+
+    public void setQuat(double w,double x,double y,double z) {
+        q_w = w;
+        q_x = x;
+        q_y = y;
+        q_z = z;
     }
 
     @Override
