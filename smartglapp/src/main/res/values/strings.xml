@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Orient Teddybear Demo</string>
+    <string name="calibrate">Calibrate</string>
 </resources>

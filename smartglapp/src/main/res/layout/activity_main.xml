@@ -20,7 +20,15 @@
             android:id="@+id/activityGLView"
             android:layout_width="match_parent"
             android:layout_height="450dp"
-            android:layout_weight="50"/>
+            android:layout_weight="50" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/calibrate"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:onClick="calibrateDevice"
+        android:text="@string/calibrate" />
+
 </LinearLayout>

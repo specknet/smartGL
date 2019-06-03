@@ -169,6 +169,10 @@ public class MainActivity extends Activity {
         return java.nio.ByteBuffer.wrap(bytes_slice).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
+    public void calibrateDevice(View view) {
+        // Change the frame of reference to calibrate the device
+    }
+
     @Override
     protected void onPause() {
         if (mActivityGLView != null) {
