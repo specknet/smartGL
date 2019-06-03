@@ -156,7 +156,7 @@ public class MainActivity extends Activity {
         //q_y = -y;
         //q_z = -z;
 
-        glv.setQuat(w,x,-y,-z);
+        glv.setQuat(w, x, -y, -z);
 
         //Negating y and z seems to work
 
@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
 
     private float floatFromDataLittle(byte[] bytes_slice) {
         // Bytes to float (little endian)
-        return  java.nio.ByteBuffer.wrap(bytes_slice).order(ByteOrder.LITTLE_ENDIAN).getInt();
+        return java.nio.ByteBuffer.wrap(bytes_slice).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
     @Override

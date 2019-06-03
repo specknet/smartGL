@@ -84,7 +84,7 @@ public class GLViewController implements SmartGLViewController {
         }
     }
 
-    public void setQuat(double w,double x,double y,double z) {
+    public void setQuat(double w, double x, double y, double z) {
         q_w = w;
         q_x = x;
         q_y = y;
@@ -237,11 +237,11 @@ public class GLViewController implements SmartGLViewController {
             //String q_str = "Quat: (" + q_w + ", " + q_x + ", " + q_y + ", " + q_z + ")";
             //Log.d("quat", q_str);
 
-            qtoa(q_w,q_x,q_y,q_z);
+            qtoa(q_w, q_x, q_y, q_z);
 
-            float rz = (float)(bank * 180.0 / Math.PI);
-            float ry = (float)(attitude * 180.0 / Math.PI);
-            float rx = (float)(heading * 180.0 / Math.PI);
+            float rz = (float) (bank * 180.0 / Math.PI);
+            float ry = (float) (attitude * 180.0 / Math.PI);
+            float rx = (float) (heading * 180.0 / Math.PI);
 
             mObject3D.setRotation(rx, ry, rz);
             //rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
@@ -311,6 +311,7 @@ public class GLViewController implements SmartGLViewController {
         object3D.setPos(0, 0, -4);
         return object3D;
     }
+
     void switchToEarth() {
         mNextObject = null;
         mNextObjectColor = mEarth;
@@ -336,25 +337,26 @@ public class GLViewController implements SmartGLViewController {
         mNextObject = mBus;
     }
 
+    //    Quaternions to acceleration/angle (orientation)
     public void qtoa(double w, double x, double y, double z) {
         double sqw = Math.pow(w, 2);
         double sqx = Math.pow(x, 2);
         double sqy = Math.pow(y, 2);
         double sqz = Math.pow(z, 2);
         double unit = sqx + sqy + sqz + sqw;
-        double test = x*y+z*w;
+        double test = x * y + z * w;
         if (test > 0.499 * unit) {
-            heading = 2*atan2(x, w);
-            attitude = Math.PI/2;
+            heading = 2 * atan2(x, w);
+            attitude = Math.PI / 2;
             bank = 0;
-        } else if (test < -0.499*unit) {
-            heading = -2*atan2(x, w);
-            attitude = -Math.PI/2;
+        } else if (test < -0.499 * unit) {
+            heading = -2 * atan2(x, w);
+            attitude = -Math.PI / 2;
             bank = 0;
         } else {
-            heading = atan2(2*y*w-2*x*z, sqx-sqy-sqz+sqw);
-            attitude = asin(2*test/unit);
-            bank = atan2(2*x*w-2*y*z, -sqx+sqy-sqz+sqw);
+            heading = atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw);
+            attitude = asin(2 * test / unit);
+            bank = atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw);
         }
     }
 
