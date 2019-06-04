@@ -13,11 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package fr.arnaudguyon.smartglapp;
+package fr.arnaudguyon.orientteddybear;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import fr.arnaudguyon.smartgl.math.Vector3D;
 import fr.arnaudguyon.smartgl.opengl.LightParallel;
@@ -37,45 +36,36 @@ import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
 
 /**
- * Created by arnaud on 19/11/2016.
+ * Created by: Andrew Bates
  */
 
 public class GLViewController implements SmartGLViewController {
-
-    private Sprite mSprite;
-    private Object3D mObject3D;
-    private float mRandomRotationSpeed;
-    private float mSpeedX = 200;
-    private float mSpeedY = 200;
-
-    private Texture mSpriteTexture;
-    private Texture mObjectTexture;
-    private Texture mSpaceFrigateTexture;
-    private Texture mSpaceCruiserTexture;
-
-    private RenderPassObject3D mRenderPassObject3D;
-    private RenderPassObject3D mRenderPassObject3DColor;
-    private RenderPassSprite mRenderPassSprite;
-
-    private Object3D mBus;
-    private Object3D mCube;
-    private Object3D mFrigate;
-    private Object3D mCruiser;
-    private Object3D mEarth;
-
-    private Object3D mNextObject = null;
-    private Object3D mNextObjectColor = null;
 
     public double q_w = 1.0;
     public double q_x = 0.0;
     public double q_y = 0.0;
     public double q_z = 0.0;
 
-    private double attitude = 0.0;
-    private double heading = 0.0;
-    private double bank = 0.0;
+    private Sprite mSprite;
+    private Object3D mObject3D;
 
-    private static String rotation;
+    private float mRandomRotationSpeed;
+    private Texture mSpriteTexture;
+    private Texture mObjectTexture;
+    private Texture mSpaceFrigateTexture;
+    private Texture mSpaceCruiserTexture;
+    private RenderPassObject3D mRenderPassObject3D;
+    private RenderPassObject3D mRenderPassObject3DColor;
+    private RenderPassSprite mRenderPassSprite;
+
+    private Object3D teddyBear;
+    private Object3D mNextObject = null;
+    private Object3D mNextObjectColor = null;
+
+    private double attitude = 0.0; // Y
+    private double heading = 0.0; // X
+    private double bank = 0.0; // Z
+
 
     public GLViewController() {
         mRandomRotationSpeed = (float) ((Math.random() * 50) + 100);
@@ -126,14 +116,9 @@ public class GLViewController implements SmartGLViewController {
         mSprite.setDisplayPriority(20);
         //mRenderPassSprite.addSprite(mSprite);
 
-        mBus = loadBus(context);
-        mCube = loadCube(context);
-        mFrigate = loadFrigate(context);
-        mCruiser = loadCruiser(context);
-        mEarth = loadEarth(context);
+        teddyBear = loadTeddyBear(context);
 
-        //switchToFrigate();
-        switchToEarth();
+        switchToTeddyBear();
     }
 
     @Override
@@ -181,61 +166,8 @@ public class GLViewController implements SmartGLViewController {
 
         SmartGLRenderer renderer = smartGLView.getSmartGLRenderer();
         float frameDuration = renderer.getFrameDuration();
-        /*
-        if (mSprite != null) {
-
-            float angle = mSprite.getRotation() + frameDuration * mRandomRotationSpeed;
-            mSprite.setRotation(angle);
-
-            float x = mSprite.getPosX() + frameDuration * mSpeedX;
-            float y = mSprite.getPosY() + frameDuration * mSpeedY;
-            if (x < mSprite.getWidth() / 2) {
-                x = mSprite.getWidth() / 2;
-                mSpeedX = -mSpeedX;
-                if (mSpeedY > 0) {
-                    mRandomRotationSpeed = Math.abs(mRandomRotationSpeed);
-                } else {
-                    mRandomRotationSpeed = -Math.abs(mRandomRotationSpeed);
-                }
-            } else if (x + mSprite.getWidth() / 2 >= smartGLView.getWidth()) {
-                x = smartGLView.getWidth() - mSprite.getWidth() / 2;
-                mSpeedX = -mSpeedX;
-                if (mSpeedY > 0) {
-                    mRandomRotationSpeed = -Math.abs(mRandomRotationSpeed);
-                } else {
-                    mRandomRotationSpeed = Math.abs(mRandomRotationSpeed);
-                }
-            }
-            if (y < mSprite.getHeight() / 2) {
-                y = mSprite.getHeight() / 2;
-                mSpeedY = -mSpeedY;
-                if (mSpeedX > 0) {
-                    mRandomRotationSpeed = -Math.abs(mRandomRotationSpeed);
-                } else {
-                    mRandomRotationSpeed = Math.abs(mRandomRotationSpeed);
-                }
-            } else if (y + mSprite.getHeight() / 2 >= smartGLView.getHeight()) {
-                y = smartGLView.getHeight() - mSprite.getHeight() / 2;
-                mSpeedY = -mSpeedY;
-                if (mSpeedX > 0) {
-                    mRandomRotationSpeed = Math.abs(mRandomRotationSpeed);
-                } else {
-                    mRandomRotationSpeed = -Math.abs(mRandomRotationSpeed);
-                }
-            }
-            mSprite.setPos(x, y);
-        }
-        */
 
         if (mObject3D != null) {
-            /*
-            float rx = mObject3D.getRotX() + 50 * frameDuration;
-            float ry = mObject3D.getRotY() + 37 * frameDuration;
-            float rz = mObject3D.getRotZ() + 26 * frameDuration;
-            mObject3D.setRotation(rx, ry, rz);
-            */
-            //String q_str = "Quat: (" + q_w + ", " + q_x + ", " + q_y + ", " + q_z + ")";
-            //Log.d("quat", q_str);
 
             qtoa(q_w, q_x, q_y, q_z);
 
@@ -259,50 +191,7 @@ public class GLViewController implements SmartGLViewController {
         mRenderPassObject3DColor.clearObjects();
     }
 
-    private Object3D loadCruiser(@NonNull Context context) {
-        WavefrontModel model = new WavefrontModel.Builder(context, R.raw.space_cruiser_obj)
-                .addTexture("", mSpaceCruiserTexture)
-                .create();
-        Object3D object3D = model.toObject3D();
-        object3D.setScale(0.2f, 0.2f, 0.2f);
-        object3D.setPos(0, 0, -5);
-        return object3D;
-    }
-
-    void switchToCruiser() {
-        mNextObjectColor = null;
-        mNextObject = mCruiser;
-    }
-
-    private Object3D loadFrigate(@NonNull Context context) {
-        WavefrontModel model = new WavefrontModel.Builder(context, R.raw.space_frigate_obj)
-                .addTexture("", mSpaceFrigateTexture)
-                .create();
-        Object3D object3D = model.toObject3D();
-        object3D.setScale(0.2f, 0.2f, 0.2f);
-        object3D.setPos(0, 0, -7);
-        return object3D;
-    }
-
-    void switchToFrigate() {
-        mNextObjectColor = null;
-        mNextObject = mFrigate;
-    }
-
-    private Object3D loadCube(@NonNull Context context) {
-        WavefrontModel modelColored = new WavefrontModel.Builder(context, R.raw.cube_color_obj)
-                .create();
-        Object3D object3D = modelColored.toObject3D();
-        object3D.setPos(0, 0, -4);
-        return object3D;
-    }
-
-    void switchToCube() {
-        mNextObject = null;
-        mNextObjectColor = mCube;
-    }
-
-    private Object3D loadEarth(@NonNull Context context) {
+    private Object3D loadTeddyBear(@NonNull Context context) {
         WavefrontModel modelColored = new WavefrontModel.Builder(context, R.raw.teddybear2_simplified_obj)//.create();
                 .setColor(0.5f, 0.1f, 0.3f)
                 .create();
@@ -312,30 +201,11 @@ public class GLViewController implements SmartGLViewController {
         return object3D;
     }
 
-    void switchToEarth() {
+    void switchToTeddyBear() {
         mNextObject = null;
-        mNextObjectColor = mEarth;
+        mNextObjectColor = teddyBear;
     }
 
-    private Object3D loadBus(@NonNull Context context) {
-        WavefrontModel model = new WavefrontModel.Builder(context, R.raw.bus_obj)
-                .addTexture("Mat_1", mObjectTexture)
-                .addTexture("Mat_2", mSpriteTexture)
-                .addTexture("Mat_3", mObjectTexture)
-                .addTexture("Mat_4", mSpriteTexture)
-                .addTexture("Mat_5", mObjectTexture)
-                .addTexture("Mat_6", mSpriteTexture)
-                .create();
-        Object3D object3D = model.toObject3D();
-        object3D.setScale(0.1f, 0.1f, 0.1f);
-        object3D.setPos(0, 0, -50);
-        return object3D;
-    }
-
-    void switchToBus() {
-        mNextObjectColor = null;
-        mNextObject = mBus;
-    }
 
     //    Quaternions to acceleration/angle (orientation)
     public void qtoa(double w, double x, double y, double z) {

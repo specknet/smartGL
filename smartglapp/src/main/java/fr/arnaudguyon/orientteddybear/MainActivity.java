@@ -13,15 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package fr.arnaudguyon.smartglapp;
+package fr.arnaudguyon.orientteddybear;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.polidea.rxandroidble2.RxBleClient;
@@ -33,8 +31,6 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.UUID;
 
-import fr.arnaudguyon.smartgl.opengl.OpenGLRenderer;
-import fr.arnaudguyon.smartgl.opengl.SmartGLRenderer;
 import fr.arnaudguyon.smartgl.opengl.SmartGLView;
 import io.reactivex.disposables.Disposable;
 
@@ -42,15 +38,12 @@ public class MainActivity extends Activity {
 
     private static final String ORIENT_BLE_ADDRESS = "F2:6D:63:1F:17:33"; // test device
     private static final String ORIENT_QUAT_CHARACTERISTIC = "00001526-1212-efde-1523-785feabcd125";
-
+    boolean connected = false;
     private RxBleDevice orient_device;
     private Disposable scanSubscription;
     private RxBleClient rxBleClient;
     private ByteBuffer packetData;
-
     private Context ctx;
-    boolean connected = false;
-
     private SmartGLView mActivityGLView;
     private GLViewController glv;
 
@@ -60,7 +53,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        mActivityGLView = (SmartGLView) findViewById(R.id.activityGLView);
+        mActivityGLView = findViewById(R.id.activityGLView);
         mActivityGLView.setDefaultRenderer(this);
         glv = new GLViewController();
         mActivityGLView.setController(glv);
