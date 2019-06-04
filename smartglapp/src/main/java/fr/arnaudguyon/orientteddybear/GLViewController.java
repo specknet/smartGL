@@ -207,7 +207,7 @@ public class GLViewController implements SmartGLViewController {
     }
 
 
-    //    Quaternions to acceleration/angle (orientation)
+    //    Quaternions to euler angles
     public void qtoa(double w, double x, double y, double z) {
         double sqw = Math.pow(w, 2);
         double sqx = Math.pow(x, 2);

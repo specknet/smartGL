@@ -15,9 +15,13 @@
  */
 package fr.arnaudguyon.orientteddybear;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -38,6 +42,7 @@ public class MainActivity extends Activity {
 
     private static final String ORIENT_BLE_ADDRESS = "F2:6D:63:1F:17:33"; // test device
     private static final String ORIENT_QUAT_CHARACTERISTIC = "00001526-1212-efde-1523-785feabcd125";
+    private static int PERMISSION_REQUEST_LOCATION_COARSE = 0;
     boolean connected = false;
     private RxBleDevice orient_device;
     private Disposable scanSubscription;
@@ -57,12 +62,23 @@ public class MainActivity extends Activity {
         mActivityGLView.setDefaultRenderer(this);
         glv = new GLViewController();
         mActivityGLView.setController(glv);
+
         ctx = this;
+        Activity a = (Activity) ctx;
+
 
         packetData = ByteBuffer.allocate(180);
         packetData.order(ByteOrder.LITTLE_ENDIAN);
 
         rxBleClient = RxBleClient.create(this);
+
+        if (ContextCompat.checkSelfPermission(a,
+                Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(a,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_REQUEST_LOCATION_COARSE);
+        }
 
         Log.i("OrientAndroid", "calling scan");
         scan();
