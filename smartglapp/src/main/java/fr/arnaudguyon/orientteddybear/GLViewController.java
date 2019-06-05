@@ -41,10 +41,8 @@ import static java.lang.Math.atan2;
 
 public class GLViewController implements SmartGLViewController {
 
-    public double q_w = 1.0;
-    public double q_x = 0.0;
-    public double q_y = 0.0;
-    public double q_z = 0.0;
+    public Quaternion q;
+    public Quaternion frameOfReference = new Quaternion(1, 0, 0, 0);
 
     private Sprite mSprite;
     private Object3D mObject3D;
@@ -62,8 +60,8 @@ public class GLViewController implements SmartGLViewController {
     private Object3D mNextObject = null;
     private Object3D mNextObjectColor = null;
 
-    private double attitude = 0.0; // Y
     private double heading = 0.0; // X
+    private double attitude = 0.0; // Y
     private double bank = 0.0; // Z
 
 
@@ -75,10 +73,11 @@ public class GLViewController implements SmartGLViewController {
     }
 
     public void setQuat(double w, double x, double y, double z) {
-        q_w = w;
-        q_x = x;
-        q_y = y;
-        q_z = z;
+        q = new Quaternion(w, x, y, z);
+    }
+
+    public void setNewFrame(double w, double x, double y, double z) {
+        frameOfReference = new Quaternion(w, x, y, z);
     }
 
     @Override
@@ -169,11 +168,17 @@ public class GLViewController implements SmartGLViewController {
 
         if (mObject3D != null) {
 
-            qtoa(q_w, q_x, q_y, q_z);
+            if (q == null) {
+                q = frameOfReference;
+            }
 
-            float rz = (float) (bank * 180.0 / Math.PI);
-            float ry = (float) (attitude * 180.0 / Math.PI);
-            float rx = (float) (heading * 180.0 / Math.PI);
+//            q = Quaternion.inverse(Quaternion.qMultiplication(frameOfReference, q));
+
+            double angles[] = Quaternion.quaternionToEulerAngles(q);
+
+            float rx = (float) (angles[0] * 180.0 / Math.PI);
+            float ry = (float) (angles[1] * 180.0 / Math.PI);
+            float rz = (float) (angles[2] * 180.0 / Math.PI);
 
             mObject3D.setRotation(rx, ry, rz);
             //rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
@@ -206,8 +211,8 @@ public class GLViewController implements SmartGLViewController {
         mNextObjectColor = teddyBear;
     }
 
-
-    //    Quaternions to euler angles
+    // Deprecated, use the Quaterion class function
+    // Quaternions to euler angles
     public void qtoa(double w, double x, double y, double z) {
         double sqw = Math.pow(w, 2);
         double sqx = Math.pow(x, 2);

@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.polidea.rxandroidble2.RxBleClient;
@@ -51,12 +52,15 @@ public class MainActivity extends Activity {
     private Context ctx;
     private SmartGLView mActivityGLView;
     private GLViewController glv;
+    private Boolean button = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        final Button calibrateButton = findViewById(R.id.calibrate);
 
         mActivityGLView = findViewById(R.id.activityGLView);
         mActivityGLView.setDefaultRenderer(this);
@@ -79,6 +83,29 @@ public class MainActivity extends Activity {
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_REQUEST_LOCATION_COARSE);
         }
+
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                orient_device = rxBleClient.getBleDevice(ORIENT_BLE_ADDRESS);
+//                String characteristic;
+//                characteristic = ORIENT_QUAT_CHARACTERISTIC;
+//
+//                orient_device.establishConnection(false)
+//                        .flatMapSingle(rxBleConnection -> rxBleConnection.readCharacteristic(UUID.fromString(characteristic)))
+//                        .subscribe(
+//                                bytes -> {
+//                                    // Read characteristic value.
+//                                    handleQuatPacket(bytes, true);
+//                                },
+//                                throwable -> {
+//                                    // Handle an error here
+//                                }
+//                        );
+                button = true;
+
+            }
+        });
 
         Log.i("OrientAndroid", "calling scan");
         scan();
@@ -144,7 +171,9 @@ public class MainActivity extends Activity {
                                             Toast.LENGTH_SHORT).show();
                                 });
                             }
-                            handleQuatPacket(bytes);
+                            handleQuatPacket(bytes, button);
+                            button = false;
+
                         },
                         throwable -> {
                             // Handle an error here.
@@ -153,7 +182,7 @@ public class MainActivity extends Activity {
                 );
     }
 
-    private void handleQuatPacket(final byte[] bytes) {
+    private void handleQuatPacket(final byte[] bytes, boolean bPress) {
         float divisor_quat = (1 << 30);
         float w = floatFromDataLittle(Arrays.copyOfRange(bytes, 0, 4)) / divisor_quat;
         float x = floatFromDataLittle(Arrays.copyOfRange(bytes, 4, 8)) / divisor_quat;
@@ -165,7 +194,11 @@ public class MainActivity extends Activity {
         //q_y = -y;
         //q_z = -z;
 
-        glv.setQuat(w, x, -y, -z);
+        if (bPress) {
+            glv.setNewFrame(w, x, -y, -z);
+        } else {
+            glv.setQuat(w, x, -y, -z);
+        }
 
         //Negating y and z seems to work
 
@@ -180,6 +213,39 @@ public class MainActivity extends Activity {
 
     public void calibrateDevice(View view) {
         // Change the frame of reference to calibrate the device
+//        orient_device = rxBleClient.getBleDevice(ORIENT_BLE_ADDRESS);
+//        String characteristic;
+//        characteristic = ORIENT_QUAT_CHARACTERISTIC;
+//
+//        orient_device.establishConnection(false)
+//                .flatMap(rxBleConnection -> rxBleConnection.setupNotification(UUID.fromString(characteristic)))
+//                .doOnNext(notificationObservable -> {
+//                    // Notification has been set up
+//                })
+//                .flatMap(notificationObservable -> notificationObservable) // <-- Notification has been set up, now observe value changes.
+//                .subscribe(
+//                        bytes -> {
+//                            //n += 1;
+//                            // Given characteristic has been changes, here is the value.
+//
+//                            //Log.i("OrientAndroid", "Received " + bytes.length + " bytes");
+//                            if (!connected) {
+//                                connected = true;
+//
+//                                runOnUiThread(() -> {
+//                                    Log.i("OrientAndroid", "receiving sensor data");
+//                                    Toast.makeText(ctx, "Receiving sensor data",
+//                                            Toast.LENGTH_SHORT).show();
+//                                });
+//                            }
+//                            handleQuatPacket(bytes, true);
+//                        },
+//                        throwable -> {
+//                            // Handle an error here.
+//                            Log.e("OrientAndroid", "Error: " + throwable.toString());
+//                        }
+//                );
+
     }
 
     @Override
