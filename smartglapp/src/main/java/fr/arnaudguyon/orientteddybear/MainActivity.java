@@ -87,21 +87,6 @@ public class MainActivity extends Activity {
         calibrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                orient_device = rxBleClient.getBleDevice(ORIENT_BLE_ADDRESS);
-//                String characteristic;
-//                characteristic = ORIENT_QUAT_CHARACTERISTIC;
-//
-//                orient_device.establishConnection(false)
-//                        .flatMapSingle(rxBleConnection -> rxBleConnection.readCharacteristic(UUID.fromString(characteristic)))
-//                        .subscribe(
-//                                bytes -> {
-//                                    // Read characteristic value.
-//                                    handleQuatPacket(bytes, true);
-//                                },
-//                                throwable -> {
-//                                    // Handle an error here
-//                                }
-//                        );
                 button = true;
 
             }
@@ -195,7 +180,7 @@ public class MainActivity extends Activity {
         //q_z = -z;
 
         if (bPress) {
-            glv.setNewFrame(w, x, -y, -z);
+            glv.setNewFrame(w, x, y, z);
         } else {
             glv.setQuat(w, x, -y, -z);
         }

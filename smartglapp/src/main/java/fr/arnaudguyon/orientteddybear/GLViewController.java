@@ -74,6 +74,10 @@ public class GLViewController implements SmartGLViewController {
 
     public void setQuat(double w, double x, double y, double z) {
         q = new Quaternion(w, x, y, z);
+//        q = Quaternion.qMultiplication(Quaternion.inverse(frameOfReference), q);
+//        q = Quaternion.inverse(Quaternion.qMultiplication(q, frameOfReference));
+//        q = Quaternion.qMultiplication(Quaternion.qMultiplication(frameOfReference, q), Quaternion.conjugate(frameOfReference));
+
     }
 
     public void setNewFrame(double w, double x, double y, double z) {
@@ -171,8 +175,14 @@ public class GLViewController implements SmartGLViewController {
             if (q == null) {
                 q = frameOfReference;
             }
-
-//            q = Quaternion.inverse(Quaternion.qMultiplication(frameOfReference, q));
+//
+//            if (!q.equals(oldQ)) {
+//                oldQ = q;
+//                q = Quaternion.inverse(Quaternion.qMultiplication(frameOfReference, q));
+//
+//            }
+//            q = Quaternion.qMultiplication(Quaternion.qMultiplication(frameOfReference, q), Quaternion.conjugate(frameOfReference));
+//            q = Quaternion.inverse(Quaternion.qMultiplication(q, frameOfReference));
 
             double angles[] = Quaternion.quaternionToEulerAngles(q);
 
