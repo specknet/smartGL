@@ -180,9 +180,9 @@ public class MainActivity extends Activity {
         //q_z = -z;
 
         if (bPress) {
-            glv.setNewFrame(w, x, -y, z);
+            glv.setNewFrame(w, x, y, z);
         } else {
-            glv.setQuat(w, x, -y, z);
+            glv.setQuat(w, x, y, z);
         }
 
         //Negating y and z seems to work

@@ -26,7 +26,7 @@ public class Quaternion {
     }
 
     public static Quaternion inverse(Quaternion q) {
-        return Quaternion.sMultiplication(Quaternion.conjugate(q), Math.pow(Quaternion.norm(q), 2));
+        return Quaternion.sMultiplication(Quaternion.conjugate(q), 1 / Math.pow(Quaternion.norm(q), 2));
     }
 
     public static Quaternion qMultiplication(Quaternion q1, Quaternion q2) {
