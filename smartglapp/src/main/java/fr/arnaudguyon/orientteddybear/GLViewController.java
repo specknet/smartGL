@@ -41,8 +41,10 @@ import static java.lang.Math.atan2;
 
 public class GLViewController implements SmartGLViewController {
 
+    public RawData raw;
     public Quaternion q;
     public Quaternion frameOfReference = new Quaternion(1, 0, 0, 0);
+    public RingBuffer buffer = new RingBuffer(20);
 
     private Sprite mSprite;
     private Object3D mObject3D;
@@ -64,18 +66,29 @@ public class GLViewController implements SmartGLViewController {
     private double attitude = 0.0; // Y
     private double bank = 0.0; // Z
 
+    private Context context;
 
-    public GLViewController() {
+    public GLViewController(Context context) {
         mRandomRotationSpeed = (float) ((Math.random() * 50) + 100);
+        this.context = context;
         if (Math.random() > 0.5f) {
             mRandomRotationSpeed *= -1;
         }
     }
 
+    public void setRaw(double accel_x, double accel_y, double accel_z, double gyro_x, double gyro_y, double gyro_z) {
+        raw = new RawData(accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z);
+        if (!buffer.put(raw)) {
+            new ShakeDetection(this.context).execute(buffer);
+            for (int i = 0; i < 10; i++) {
+                buffer.take();
+            }
+        }
+    }
+
     public void setQuat(double w, double x, double y, double z) {
         q = new Quaternion(w, x, y, z);
-//        q = Quaternion.inverse(Quaternion.qMultiplication(q, frameOfReference));
-
+//       q = Quaternion.inverse(Quaternion.qMultiplication(q, frameOfReference));
         q = Quaternion.qMultiplication(Quaternion.inverse(frameOfReference), q);
 //        q = Quaternion.qMultiplication(Quaternion.qMultiplication(frameOfReference, q), Quaternion.conjugate(frameOfReference));
 

@@ -62,14 +62,13 @@ public class MainActivity extends Activity {
 
         final Button calibrateButton = findViewById(R.id.calibrate);
 
-        mActivityGLView = findViewById(R.id.activityGLView);
-        mActivityGLView.setDefaultRenderer(this);
-        glv = new GLViewController();
-        mActivityGLView.setController(glv);
-
         ctx = this;
         Activity a = (Activity) ctx;
 
+        mActivityGLView = findViewById(R.id.activityGLView);
+        mActivityGLView.setDefaultRenderer(this);
+        glv = new GLViewController(getApplicationContext());
+        mActivityGLView.setController(glv);
 
         packetData = ByteBuffer.allocate(180);
         packetData.order(ByteOrder.LITTLE_ENDIAN);
@@ -157,6 +156,7 @@ public class MainActivity extends Activity {
                                 });
                             }
                             handleQuatPacket(bytes, button);
+                            handleRawPacket(bytes);
                             button = false;
 
                         },
@@ -196,41 +196,24 @@ public class MainActivity extends Activity {
         return java.nio.ByteBuffer.wrap(bytes_slice).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
-    public void calibrateDevice(View view) {
-        // Change the frame of reference to calibrate the device
-//        orient_device = rxBleClient.getBleDevice(ORIENT_BLE_ADDRESS);
-//        String characteristic;
-//        characteristic = ORIENT_QUAT_CHARACTERISTIC;
-//
-//        orient_device.establishConnection(false)
-//                .flatMap(rxBleConnection -> rxBleConnection.setupNotification(UUID.fromString(characteristic)))
-//                .doOnNext(notificationObservable -> {
-//                    // Notification has been set up
-//                })
-//                .flatMap(notificationObservable -> notificationObservable) // <-- Notification has been set up, now observe value changes.
-//                .subscribe(
-//                        bytes -> {
-//                            //n += 1;
-//                            // Given characteristic has been changes, here is the value.
-//
-//                            //Log.i("OrientAndroid", "Received " + bytes.length + " bytes");
-//                            if (!connected) {
-//                                connected = true;
-//
-//                                runOnUiThread(() -> {
-//                                    Log.i("OrientAndroid", "receiving sensor data");
-//                                    Toast.makeText(ctx, "Receiving sensor data",
-//                                            Toast.LENGTH_SHORT).show();
-//                                });
-//                            }
-//                            handleQuatPacket(bytes, true);
-//                        },
-//                        throwable -> {
-//                            // Handle an error here.
-//                            Log.e("OrientAndroid", "Error: " + throwable.toString());
-//                        }
-//                );
+    private void handleRawPacket(final byte[] bytes) {
+        packetData.clear();
+        packetData.put(bytes);
+        packetData.position(0);
 
+        float accel_x = packetData.getShort() / 1024.f;  // integer part: 6 bits, fractional part 10 bits, so div by 2^10
+        float accel_y = packetData.getShort() / 1024.f;
+        float accel_z = packetData.getShort() / 1024.f;
+
+        float gyro_x = packetData.getShort() / 32.f;  // integer part: 11 bits, fractional part 5 bits, so div by 2^5
+        float gyro_y = packetData.getShort() / 32.f;
+        float gyro_z = packetData.getShort() / 32.f;
+
+        float mag_x = packetData.getShort() / 16.f;  // integer part: 12 bits, fractional part 4 bits, so div by 2^4
+        float mag_y = packetData.getShort() / 16.f;
+        float mag_z = packetData.getShort() / 16.f;
+
+        glv.setRaw(accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z);
     }
 
     @Override
