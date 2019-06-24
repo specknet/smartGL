@@ -41,7 +41,8 @@ import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends Activity {
 
-    private static final String ORIENT_BLE_ADDRESS = "F2:6D:63:1F:17:33"; // test device
+//    private static final String ORIENT_BLE_ADDRESS = "F2:6D:63:1F:17:33"; // test device
+    private static final String ORIENT_BLE_ADDRESS = "D4:35:E6:44:FB:AC";
     private static final String ORIENT_QUAT_CHARACTERISTIC = "00001526-1212-efde-1523-785feabcd125";
     private static int PERMISSION_REQUEST_LOCATION_COARSE = 0;
     boolean connected = false;
