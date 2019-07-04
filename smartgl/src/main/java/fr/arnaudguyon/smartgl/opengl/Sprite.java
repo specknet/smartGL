@@ -179,7 +179,7 @@ public class Sprite extends RenderObject {
 	}
 
     final public void setDisplayPriority(int distanceZ) {
-        mDisplayPriority = distanceZ;
+		mDisplayPriority = distanceZ;
     }
     final public int getDisplayPriority() {
         return mDisplayPriority;

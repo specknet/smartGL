@@ -108,9 +108,10 @@ public class GLViewController implements SmartGLViewController {
         mRenderPassObject3D = new RenderPassObject3D(RenderPassObject3D.ShaderType.SHADER_TEXTURE_LIGHTS, true, true);
         mRenderPassObject3DColor = new RenderPassObject3D(RenderPassObject3D.ShaderType.SHADER_COLOR_LIGHTS, true, false);
         mRenderPassSprite = new RenderPassSprite();
+        // ORDER MATTERS. FIRST SPRITE THAT IS BACKGROUND AND THEN THE 3D OBJECT!!!!!
+        renderer.addRenderPass(mRenderPassSprite);
         renderer.addRenderPass(mRenderPassObject3D);
         renderer.addRenderPass(mRenderPassObject3DColor);
-        renderer.addRenderPass(mRenderPassSprite);
 
         renderer.setDoubleSided(false);
 
@@ -126,12 +127,13 @@ public class GLViewController implements SmartGLViewController {
         mSpaceCruiserTexture = new Texture(context, R.drawable.space_cruiser_4_color);
 
 
-        mSprite = new Sprite(120, 120);
-        mSprite.setPivot(0.5f, 0.5f);
-        mSprite.setPos(60, 60);
+        mSprite = new Sprite(720, 1230);
+//        mSprite.setPivot(0.5f, 0.5f);
+//        mSprite.setPos(60, 60);
         mSprite.setTexture(mSpriteTexture);
-        mSprite.setDisplayPriority(20);
-        //mRenderPassSprite.addSprite(mSprite);
+        mSprite.setDisplayPriority(100);
+        mRenderPassSprite.addSprite(mSprite);
+
 
         teddyBear = loadTeddyBear(context);
 
@@ -208,6 +210,14 @@ public class GLViewController implements SmartGLViewController {
             //rotation = String.format("pitch : %.2f, yaw: %.2f, roll: %.2f", rx, ry, rx);
             //Log.i("rot", rotation);
         }
+
+//        mSpriteTexture = new Texture(context, R.drawable.planet);
+//        mSprite = new Sprite(600, 400);
+//        mSprite.setPivot(0.5f, 0.5f);
+//        mSprite.setPos(60, 60);
+//        mSprite.setTexture(mSpriteTexture);
+//        mSprite.setDisplayPriority(-1);
+//        mRenderPassSprite.addSprite(mSprite);
 
     }
 

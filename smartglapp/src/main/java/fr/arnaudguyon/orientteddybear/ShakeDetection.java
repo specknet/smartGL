@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class ShakeDetection extends AsyncTask<RingBuffer, Integer, Boolean> {
 
     private WeakReference<Context> mContext;
-    private static final double SUM_ABS_CHANGES_THRESHOLD = 800.0;
+    private static final double SUM_ABS_CHANGES_THRESHOLD = 600.0;
     private static final double MEDIAN_OF_MAX_THRESHOLD = 500.0;
 
     public ShakeDetection(Context mContext) {
@@ -62,7 +62,7 @@ public class ShakeDetection extends AsyncTask<RingBuffer, Integer, Boolean> {
         double[] out = new double[buffer.elements.length - 1];
         double sum = 0.0;
         for (int i = 0; i < buffer.elements.length - 1; i++) {
-            out[i] = Math.abs(buffer.elements[i + 1].getGyro_z() - buffer.elements[i].getGyro_z());
+            out[i] = Math.abs(buffer.elements[i + 1].getGyro_x() - buffer.elements[i].getGyro_x());
         }
 
         for (double element :
