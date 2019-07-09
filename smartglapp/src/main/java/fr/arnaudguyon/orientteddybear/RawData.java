@@ -19,6 +19,30 @@ public class RawData {
         this.gyro_z = gyro_z;
     }
 
+    public void setAccel_x(double accel_x) {
+        this.accel_x = accel_x;
+    }
+
+    public void setAccel_y(double accel_y) {
+        this.accel_y = accel_y;
+    }
+
+    public void setAccel_z(double accel_z) {
+        this.accel_z = accel_z;
+    }
+
+    public void setGyro_x(double gyro_x) {
+        this.gyro_x = gyro_x;
+    }
+
+    public void setGyro_y(double gyro_y) {
+        this.gyro_y = gyro_y;
+    }
+
+    public void setGyro_z(double gyro_z) {
+        this.gyro_z = gyro_z;
+    }
+
     public double getAccel_x() {
         return accel_x;
     }

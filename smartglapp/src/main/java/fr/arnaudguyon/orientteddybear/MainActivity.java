@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
     private SmartGLView mActivityGLView;
     private GLViewController glv;
     private Boolean button = false;
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +169,7 @@ public class MainActivity extends Activity {
                 );
     }
 
-    private void handleQuatPacket(final byte[] bytes, boolean bPress) {
+    private void handleQuatPacket(final byte[] bytes, boolean bPress, int count) {
         float divisor_quat = (1 << 30);
         float w = floatFromDataLittle(Arrays.copyOfRange(bytes, 0, 4)) / divisor_quat;
         float x = floatFromDataLittle(Arrays.copyOfRange(bytes, 4, 8)) / divisor_quat;
@@ -184,6 +185,7 @@ public class MainActivity extends Activity {
             glv.setNewFrame(w, x, y, z);
         } else {
             glv.setQuat(w, x, y, z);
+            count++;
         }
 
         //Negating y and z seems to work

@@ -66,6 +66,8 @@ public class GLViewController implements SmartGLViewController {
     private double attitude = 0.0; // Y
     private double bank = 0.0; // Z
 
+    private int count = 0;
+
     private Context context;
 
     public GLViewController(Context context) {
@@ -80,7 +82,7 @@ public class GLViewController implements SmartGLViewController {
         raw = new RawData(accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z);
         if (!buffer.put(raw)) {
             new ShakeDetection(this.context).execute(buffer);
-            for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 10; i++) {
                 buffer.take();
             }
         }
@@ -113,6 +115,8 @@ public class GLViewController implements SmartGLViewController {
         renderer.addRenderPass(mRenderPassObject3D);
         renderer.addRenderPass(mRenderPassObject3DColor);
 
+        renderer.getFrameDuration();
+
         renderer.setDoubleSided(false);
 
         SmartColor lightColor = new SmartColor(1, 1, 1);
@@ -122,16 +126,16 @@ public class GLViewController implements SmartGLViewController {
         renderer.setLightParallel(lightParallel);
 
         mSpriteTexture = new Texture(context, R.drawable.planet);
-        mObjectTexture = new Texture(context, R.drawable.coloredbg);
-        mSpaceFrigateTexture = new Texture(context, R.drawable.space_frigate_6_color);
-        mSpaceCruiserTexture = new Texture(context, R.drawable.space_cruiser_4_color);
+//        mObjectTexture = new Texture(context, R.drawable.coloredbg);
+//        mSpaceFrigateTexture = new Texture(context, R.drawable.space_frigate_6_color);
+//        mSpaceCruiserTexture = new Texture(context, R.drawable.space_cruiser_4_color);
 
 
         mSprite = new Sprite(720, 1230);
 //        mSprite.setPivot(0.5f, 0.5f);
 //        mSprite.setPos(60, 60);
         mSprite.setTexture(mSpriteTexture);
-        mSprite.setDisplayPriority(100);
+//        mSprite.setDisplayPriority(100);
         mRenderPassSprite.addSprite(mSprite);
 
 
@@ -168,6 +172,8 @@ public class GLViewController implements SmartGLViewController {
 
     @Override
     public void onTick(SmartGLView smartGLView) {
+
+        count++;
 
         Object3D next = mNextObject;
         Object3D nextColor = mNextObjectColor;
@@ -226,8 +232,8 @@ public class GLViewController implements SmartGLViewController {
     }
 
     private void dropAllObject3D() {
-        mRenderPassObject3D.clearObjects();
-        mRenderPassObject3DColor.clearObjects();
+//        mRenderPassObject3D.clearObjects();
+//        mRenderPassObject3DColor.clearObjects();
     }
 
     private Object3D loadTeddyBear(@NonNull Context context) {
